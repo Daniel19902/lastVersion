@@ -7,27 +7,23 @@
  */
 public class King
 {
-    // instance variables - replace the example below with your own
-    private int x;
-
-    /**
-     * Constructor for objects of class King
-     */
-    public King()
-    {
-        // initialise instance variables
-        x = 0;
+    private Triangle king;
+    private int row;
+    private int column;
+    
+    public King(int x, int y){
+        king = new Triangle(x, y);
     }
-
-    /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
-     */
-    public int sampleMethod(int y)
-    {
-        // put your code here
-        return x + y;
+    
+    public void makeVisible(){
+        king.makeVisible();
+    }
+    
+    public void getRow(int row){
+        this.row = row;
+    }
+    
+    public void getColumn(int column){
+        this.row = column;
     }
 }

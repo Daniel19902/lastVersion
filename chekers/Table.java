@@ -1,5 +1,6 @@
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
+import java.util.HashMap;
 /**
  * Write a description of class Table here.
  *
@@ -12,13 +13,17 @@ public class Table
     private Ficha[][] listaDeFichas;
     private int  tamaño;
     private int[] selecction;
+    private HashMap<Integer ,Integer[]> posiciones;
     public Table(int width,int moverX, int moverY){
+        posiciones = new HashMap<Integer ,Integer[]>();
         tamaño = width;
         casillas = new Rectangle[width][width];
         listaDeFichas = new Ficha[width][width];
         table(width,moverX,moverY);
         selecction = new int[2];
+        tableNumbers();
     }
+    
     public void table(int width, int moverX, int moverY){
         String colorActual =  "black";
         for (int i = 0; i < width; i++){
@@ -57,8 +62,19 @@ public class Table
                 JOptionPane.showMessageDialog(null,"ya hay una ficha en esa posición");
             }
         }
+        if (king){ 
+            makeKing(row,column);
+            listaDeFichas[row][column].getKing();
+        }
     }
-        
+    
+    private void makeKing(int row, int column){
+        Rectangle king = casillas[row][column];
+        String color = "black";
+        King peon = new King(king.getPositionX()+15,king.getPositionY()+5);
+        peon.makeVisible();
+    }
+    
     private void crearFicha(int row, int column, boolean white ){
         Rectangle asignarFicha = casillas[row][column];
         if (white){
@@ -83,6 +99,17 @@ public class Table
             this.selecction[0] = row; this.selecction[1]= column;
             seleccion.setPossion(true);
             seleccion.changeColor("blue");
+        }else{
+            JOptionPane.showMessageDialog(null,"there are not toket to select");
+        }
+    }
+    
+    private void desSelect(int top, int right){
+        Ficha desSelect = listaDeFichas[selecction[0]+top][selecction[1]+right];
+        if (desSelect.getColorBoolenao()){
+            desSelect.changeColor("green");
+        }else{
+            desSelect.changeColor("red");
         }
     }
     
@@ -90,7 +117,7 @@ public class Table
         if (removeFicha(row,column)){
             listaDeFichas[row][column].remove();
             listaDeFichas[row][column] = null;
-        }else JOptionPane.showMessageDialog(null,"no hay ficha para remover");
+        }else JOptionPane.showMessageDialog(null,"there are not toket to remove");
     }
     
     public void remove(int[][] pieces){
@@ -99,49 +126,122 @@ public class Table
         }
     }
     
-    public void shift(boolean top, boolean right){
-        Rectangle move = casillas[selecction[0]+darPosicionDeMovimiento(top)][selecction[1]+darPosicionDeMovimiento(right)];
-        if (verificarMovimiento(selecction[0],selecction[1])){
-            listaDeFichas[selecction[0]][selecction[1]].shift(move.getPositionX(),move.getPositionY(),move.getPositionX(),move.getPositionY());
-            listaDeFichas[selecction[0]][selecction[1]] = null;
-            return;
-        }      
+    public void shift(boolean top, boolean right, boolean giveMovement){
+        int[] movement = giveMovement(top, right, giveMovement);
+        if (verificarMovimiento(movement[0], movement[1])){
+            Rectangle move = casillas[selecction[0]+movement[0]][selecction[1]+movement[1]];
+            moveToken(movement[0], movement[1], move);
+            desSelect(movement[0], movement[1]);
+        }else{
+             JOptionPane.showMessageDialog(null,"movement not allowed");
+        }
+    }    
+    
+    private void moveToken(int arriba, int derecha, Rectangle move){
+        Ficha moverToken = listaDeFichas[selecction[0]][selecction[1]];
+        listaDeFichas[selecction[0]][selecction[1]].shift(move.getPositionX(),move.getPositionY(),arriba,derecha);
+        listaDeFichas[selecction[0]+arriba][selecction[1]+derecha] = listaDeFichas[selecction[0]][selecction[1]];
+        listaDeFichas[selecction[0]][selecction[1]] = null;
     }
-    /**
-    public void jump(boolean top, boolean right, boolean desSelect){
-        for(int i = 0; i<listaDeFichas.length; i++){
-            for (int j = 0; j<listaDeFichas.length; j++){
-                if (listaDeFichas[i][j]!= null){
-                    if(listaDeFichas[i][j].getSelect()){
-                        listaDeFichas[i][j].jump(top,right,listaDeFichas,casillas,i,j,desSelect);
-                        return;
-                    }
-                }
+    
+    private int [] giveMovement(boolean top, boolean right, boolean giveMovement){
+        int [] movement = new int [2];
+        movement[0] = darPosicionDeMovimiento(top,giveMovement); movement[1] = darPosicionDeMovimiento(right,giveMovement);
+        return movement;
+    }
+   
+    public void jump(boolean top, boolean right, boolean giveMovement){
+        if (checkMovementJump(top, right)){
+            int [] movement = giveMovement(top, right, !giveMovement);
+            shift(top, right, giveMovement);
+            remove(selecction[0]+movement[0], selecction[1]+movement[1]);
+        }
+    }
+    
+    public boolean checkMovementJump(boolean top, boolean right){
+        int[] movement = giveMovement(top, right, true);
+        int[] movement2 = giveMovement(top, right, false); 
+        boolean checkMovement = true;
+        if (listaDeFichas[selecction[0]+movement[0]][selecction[1]+movement[1]] == null) checkMovement = false;
+        else if (listaDeFichas[selecction[0]+movement2[0]][selecction[1]+movement2[1]] !=null)checkMovement = false;
+        else if (listaDeFichas[selecction[0]][selecction[1]].getColorBoolenao() == listaDeFichas[selecction[0]+movement[0]][selecction[1]+movement[1]].getColorBoolenao())checkMovement = false;
+        return checkMovement;
+    }
+    
+    public void autoSelect(ArrayList<Integer> move, int i){
+        Integer[] posicion = posiciones.get(move.get(i));
+        select(posicion[0],posicion[1]);
+    }
+    
+    public void addAuto(int add,boolean white){
+        Integer[] posicion = posiciones.get(add);
+        add(white, true, posicion[0],posicion[1]);
+    }
+    
+    public void move(String notacion, char movimiento, ArrayList<Integer> move){
+        boolean top = true;
+        boolean right = true;
+        if (movimiento == '-'){
+            autoSelect(move,0);
+            if (move.get(0) > move.get(1))top = false;
+            right = rigth(move.get(0),move.get(1));
+            shift(top,right,true);
+        }else{
+            for (int i = 0; i < move.size()-1; i++){
+                autoSelect(move,i);
+                if (move.get(0)>move.get(1))top= false;
+                right = jump(move.get(0),move.get(1));
+                jump(top, right, false);
             }
         }
     }
     
-    public void move(String notacion, char movimiento,ArrayList<Integer> move){
-        boolean top = true;
-        boolean right = true;
-        boolean desSelect = false;
-        if (movimiento == '-'){
-            right = rigth(move.get(0),move.get(1));
-            if (move.get(0) > move.get(1))top = false;
-            else top = true;
-            shift(top,right);
-        }else{
-            for (int i = 0; (int) i<(move.size()-1); i++){
-                if (move.get(i) > move.get(i+1)) top = false;
-                else top = true;
-                right = jump(move.get(i),move.get(i+1));
-                System.out.println("yo"+" "+move.get(i)+" "+move.get(i+1));
-                if (i == move.size()-2) desSelect = true;
-                jump(top,right,desSelect);
+    private void tableNumbers(){
+        int contador = 1;
+        for (int i = 0 ; i < 8 ; i++){
+            for (int j = 1-i%2 ; j < 8 ; j+=2){
+                posiciones.put(contador , new Integer[] {i,j});
+                contador+=1;
             }
         }
     }
-    */
+    
+    private boolean rigth(int shift , int shift2){
+        boolean right;
+        double decimal = (double)shift/4;
+        int entero = (int)decimal;
+        if (decimal - entero != 0){
+            if (entero%2 == 0){
+                if(shift-shift2 == -4 || shift-shift2 == 4)right = false;
+                else right = true;
+            }else{
+                if(shift-shift2 == -4 || shift-shift2 == 4)right = true;
+                else right = false;
+            }
+        }else{
+            entero -=1;
+            if (entero%2 == 0){
+                if(shift-shift2 == -4 || shift-shift2 == 4)right = false;
+                else right = true;
+            }else{
+                if(shift-shift2 == -4 || shift-shift2 == 4)right = true;
+                else right = false;
+            }
+        }
+        return right;
+    }
+    
+    private boolean jump(int jump, int jump2){
+        boolean right = true;
+        if (jump - jump2 == -9 || jump - jump2 == 7){
+            right = true;
+        }
+        else if (jump -jump2 == 9 || jump - jump2 == -7){
+            right = false;
+        }
+        return right;
+    }
+    
     public String write(){
         String write = "";
         for (int i = 0; i < listaDeFichas.length;i++){
@@ -178,63 +278,25 @@ public class Table
         }else return quitarFicha;
     }
     
-    private boolean rigth(int shift , int shift2){
-        boolean right;
-        double decimal = (double)shift/4;
-        double decimal2 = decimal;
-        int entero = (int)decimal2;
-        if (decimal - entero != 0){
-            if (entero%2 == 0){
-                System.out.println("entreyo"+" "+decimal+" "+entero);
-                if(shift-shift2 == -4 || shift-shift2 == 4)right = false;
-                else right = true;
-            }else{
-                System.out.println("entreyo"+" "+decimal+" "+entero);
-                if(shift-shift2 == -4 || shift-shift2 == 4)right = true;
-                else right = false;
-            }
-        }else{
-            System.out.println("entre2"+" "+decimal+" "+entero);
-            entero -=1;
-            if (entero%2 == 0){
-                if(shift-shift2 == -4 || shift-shift2 == 4)right = false;
-                else right = true;
-            }else{
-                if(shift-shift2 == -4 || shift-shift2 == 4)right = true;
-                else right = false;
-            }
-        }
-        return right;
-    }
-    
-    private boolean jump(int jump, int jump2){
-        System.out.println("yo");
-        boolean right = true;
-        if (jump - jump2 == -9 || jump - jump2 == 7){
-            right = true;
-        }
-        else if (jump -jump2 == 9 || jump - jump2 == -7){
-            right = false;
-        }
-        System.out.println("right"+" "+right);
-        return right;
-    }
-    
     public Ficha[][] getListaDeFichas(){
         return listaDeFichas;
     }
     
-    private int darPosicionDeMovimiento(boolean mover){
+    private int darPosicionDeMovimiento(boolean mover, boolean shift){
         int moveTopOrRigth = 0;
-        if (mover){
-            moveTopOrRigth = 1;
+        if (shift){
+            if (mover){
+                moveTopOrRigth = 1;
+            }else moveTopOrRigth = -1;
         }else{
-            moveTopOrRigth = -1;
+            if (mover){
+                moveTopOrRigth = 2;
+            }else moveTopOrRigth = -2;
         }
         return moveTopOrRigth;
     }
-    
-     private boolean verificarMovimiento(int top, int right){
+
+    private boolean verificarMovimiento(int top, int right){
         Ficha color = listaDeFichas[selecction[0]][selecction[1]];
         boolean confirmarMovimiento = true;
         if (color.getColorBoolenao() && top == -1)confirmarMovimiento = false;

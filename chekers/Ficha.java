@@ -13,12 +13,19 @@ public class Ficha
     private int column;
     private boolean color;
     private boolean seleccion;
+    private boolean king;
     public Ficha(){
         row = 0;
         column = 0;
         seleccion = false;
         color = false;
+        king = false;
     }
+    
+    public void getKing(){
+        this.king = true;
+    }
+    
     public Ficha(int x, int y, String color){
         ficha= new Circle(x, y, color);
     }
@@ -40,7 +47,7 @@ public class Ficha
         this.row = row;
         this.column = column;
     }
-    
+
     public void makeVisible(){
         ficha.makeVisible();
     }
@@ -73,6 +80,7 @@ public class Ficha
     public boolean getSelect(){
         return this.seleccion;
     }
+    
     public String getColor(){
         return ficha.getColor();
     }
@@ -86,52 +94,5 @@ public class Ficha
         this.row = row+moveTopOrDown;
         this.column = column+moveLeftOrRigth;
     }
-
-    /**
-    public void jump(boolean top, boolean rigth, Ficha[][] listaDeFichas, Rectangle[][] casillas, int row , int column, boolean desSelect){
-        Ficha mover = listaDeFichas[row][column];
-        int moveTopOrDown = darPosicionDeMovimientoJump(top);
-        int moveLeftOrRigth = darPosicionDeMovimientoJump(rigth);
-        boolean verificarMovimiento = verificarMovimientoJump(top, rigth, mover.color, moveTopOrDown, moveLeftOrRigth, listaDeFichas, row, column);
-        // movimiento
-        if (verificarMovimiento){
-            Rectangle casillaDestino = casillas[row+moveTopOrDown][column+moveLeftOrRigth];
-            mover.moveAXyMoverAY(casillaDestino.getPositionX(),casillaDestino.getPositionY());
-            listaDeFichas[row+moveTopOrDown][column+moveLeftOrRigth] = mover;
-            if (desSelect)listaDeFichas[row+moveTopOrDown][column+moveLeftOrRigth].setPossion(false);
-            listaDeFichas[row][column] = null;
-            if (desSelect){
-                if (listaDeFichas[row+moveTopOrDown][column+moveLeftOrRigth].color)listaDeFichas[row+moveTopOrDown][column+moveLeftOrRigth].changeColor("green");
-                else listaDeFichas[row+moveTopOrDown][column+moveLeftOrRigth].changeColor("red");
-            }
-        }else JOptionPane.showMessageDialog(null,"movimiento no permitido");
-    }
-    */
-    public int darPosicionDeMovimientoJump(boolean mover){
-        int moveTopOrRigth = 0;
-        if (mover){
-            moveTopOrRigth = 2;
-        }else{
-            moveTopOrRigth = -2;
-        }
-        return moveTopOrRigth;
-    }
-    /**
-    private boolean verificarMovimientoJump(boolean top, boolean right, boolean color, int moveTopOrDown, int moveLeftOrRigth, Ficha[][] listaDeFichas, int row , int column){
-        boolean confirmarMovimiento = true;
-        int matarTop = darPosicionDeMovimiento(top);
-        int matarRigth = darPosicionDeMovimiento(right);
-        if (listaDeFichas[row+matarTop][column+matarRigth] != null && listaDeFichas[row][column].color && listaDeFichas[row+moveTopOrDown][column+moveLeftOrRigth] == null){
-            listaDeFichas[row+matarTop][column+matarRigth].makeInvisible();
-            listaDeFichas[row+matarTop][column+matarRigth] = null;
-        }else if (listaDeFichas[row+matarTop][column+matarRigth] != null && !listaDeFichas[row][column].color && listaDeFichas[row+moveTopOrDown][column+moveLeftOrRigth] == null){
-            listaDeFichas[row+matarTop][column+matarRigth].makeInvisible();
-            listaDeFichas[row+matarTop][column+matarRigth] = null;
-        }else confirmarMovimiento = false;
-        if (color && moveTopOrDown == -2)confirmarMovimiento = false;
-        else if (!color && moveTopOrDown == 2)confirmarMovimiento = false;
-        else if (listaDeFichas[row+moveTopOrDown][column+moveLeftOrRigth] != null)confirmarMovimiento = false;
-        return confirmarMovimiento;
-    }
-    */
+    
 }

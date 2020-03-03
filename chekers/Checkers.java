@@ -30,16 +30,22 @@ public class Checkers
         zonaJuego.makeVisible();
         zonaConfiguracion.makeVisible();
     }
-    
     public void add(boolean white, boolean king ,int row, int column){
+        if (juegoOConfiguracion)zonaConfiguracion.add(white ,king ,row ,column);
+        else JOptionPane.showMessageDialog(null,"metodo no permitido para este tablero");
+    }
+    
+    private void addSwap(boolean white, boolean king ,int row, int column){
         if (juegoOConfiguracion)zonaConfiguracion.add(white ,king ,row ,column);
         else zonaJuego.add(white ,king ,row ,column);
     }
     
     public void add(boolean white, int [][] men){
-        for(int i = 0; i<men.length; i++){
-            zonaConfiguracion.add(white, false, men[i][0], men[i][1]);
-        }
+        if (juegoOConfiguracion){
+            for(int i = 0; i<men.length; i++){
+                zonaConfiguracion.add(white, false, men[i][0], men[i][1]);
+            }
+        }else JOptionPane.showMessageDialog(null,"metodo no permitido para este tablero");
     }
     
     public void select(int row, int column){
@@ -48,12 +54,15 @@ public class Checkers
     }
     
     public void shift(boolean top, boolean right){
-        zonaConfiguracion.shift(top,right);
+        boolean giveMovement = true;
+        if (juegoOConfiguracion)zonaConfiguracion.shift(top,right, giveMovement);
+        else zonaJuego.shift(top,right, giveMovement);
     }
-    /**
+    
     public void jump(boolean top, boolean right){
-        boolean desSelect = true;
-        zonaConfiguracion.jump(top, right, desSelect);
+        boolean giveMovement = false;
+        if (juegoOConfiguracion)zonaConfiguracion.jump(top, right, giveMovement);
+        else zonaJuego.shift(top,right, giveMovement);
     }
     
     public void move(String notacion){
@@ -64,9 +73,10 @@ public class Checkers
             movimiento = guion;
         }else movimiento = equis;
         ArrayList<Integer> move = passToStringToInt(notacion);
-        zonaConfiguracion.move(notacion,movimiento,move);
+        if (juegoOConfiguracion)zonaConfiguracion.move(notacion, movimiento, move);
+        else zonaJuego.move(notacion, movimiento, move);
     }
-    */
+
     public String write(){
         String write = zonaConfiguracion.write();
         return write;
@@ -87,18 +97,24 @@ public class Checkers
     }
     
     public void remove(int row, int column){
+        if (juegoOConfiguracion)zonaConfiguracion.remove(row,column);
+        else JOptionPane.showMessageDialog(null,"metodo no permitido para este tablero");
+    }
+    
+    private void removeSwap(int row, int column){
         if (juegoOConfiguracion)zonaJuego.remove(row,column);
         else zonaConfiguracion.remove(row,column);
     }
     
     public void remove(int [][] pieces){
-        zonaConfiguracion.remove(pieces);
+        if (juegoOConfiguracion)zonaConfiguracion.remove(pieces);
+        else JOptionPane.showMessageDialog(null,"metodo no permitido para este tablero");
     }
     
     public void swap(){
-        swapTableros();
         if (juegoOConfiguracion)juegoOConfiguracion = false;
         else juegoOConfiguracion = true;
+        swapTableros();
         System.out.println(juegoOConfiguracion);
     }
     
@@ -109,8 +125,9 @@ public class Checkers
         for(int i = 0; i< configuracion.length; i++){
             for (int j = 0; j <configuracion.length; j++){
                 if (configuracion[i][j]!= null){
-                    add(configuracion[i][j].getColorBoolenao(),false,i,j);
-                    remove(i,j);
+                    addSwap(configuracion[i][j].getColorBoolenao(),false,i,j);
+                    System.out.println(juegoOConfiguracion);
+                    removeSwap(i,j);
                 }
             }
         }
@@ -135,5 +152,9 @@ public class Checkers
         } 
         return move;
     }
-    
+    public void add (int[] add, boolean white){
+        for(int i = 0; i<add.length; i++){
+            zonaConfiguracion.addAuto(add[i],white);
+        }
+    }
 }

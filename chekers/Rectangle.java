@@ -42,9 +42,11 @@ public class Rectangle{
     public int getPositionX(){
         return this.xPosition;
     }
+    
     public int getPositionY(){
         return this.yPosition;
     }
+    
     /**
      * Make this rectangle visible. If it was already visible, do nothing.
      */
