@@ -5,25 +5,23 @@
  * @author (your name)
  * @version (a version number or a date)
  */
-public class King
-{
+public class King extends Ficha{
     private Triangle king;
-    private int row;
-    private int column;
     
-    public King(int x, int y){
-        king = new Triangle(x, y);
+    public King(int x, int y, String color){
+        super(x, y, new Circle(x, y, color));
+        king = new Triangle();
     }
     
     public void makeVisible(){
         king.makeVisible();
     }
     
-    public void getRow(int row){
-        this.row = row;
+    public void shift(int top, int right,int moveTopOrDown, int moveLeftOrRigth){
+        moveAXyMoverAY(top,right);
+        setRow(getRow()+moveTopOrDown);
+        setColumn(getColumn()+moveLeftOrRigth);
+        king.moveAXyMoverAY(top,right);
     }
-    
-    public void getColumn(int column){
-        this.row = column;
-    }
+   
 }

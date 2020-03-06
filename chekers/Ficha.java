@@ -6,36 +6,46 @@ import java.util.ArrayList;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class Ficha
+public abstract class Ficha
 {
-    private Circle ficha;
     private int row;
     private int column;
-    private boolean color;
     private boolean seleccion;
-    private boolean king;
+    private boolean isWhite;
+    private Figura ficha;
+    
     public Ficha(){
-        row = 0;
-        column = 0;
         seleccion = false;
-        color = false;
-        king = false;
+        isWhite = false;
     }
     
-    public void getKing(){
-        this.king = true;
+    public Ficha(int row, int column,Figura f){
+        this();
+        this.row = row;
+        this.column = column;
+        ficha = f;
     }
     
-    public Ficha(int x, int y, String color){
-        ficha= new Circle(x, y, color);
+    public void moveAXyMoverAY(int moveX,int moveY){
+        ficha.moveHorizontal(moveX);
+        ficha.moveVertical(moveY);
     }
+    
+    public void setRow(int row){
+        this.row = row;
+    }
+    
+    public void setColumn(int column){
+        this.column = column;
+    }
+    
     
     public void darColor(boolean color){
-        this.color = color;
+        this.isWhite = color;
     }
     
     public boolean getColorBoolenao(){
-        return this.color;
+        return this.isWhite;
     }
     
     public void setFicha(int row, int column){
@@ -58,11 +68,6 @@ public class Ficha
     
     public void changeColor(String color){
         ficha.changeColor(color);
-    }
-    
-    public void moveAXyMoverAY(int moveX,int moveY){
-        ficha.moveHorizontal(moveX);
-        ficha.moveVertical(moveY);
     }
     
     public int getRow(){
@@ -89,10 +94,6 @@ public class Ficha
         ficha.makeInvisible();
     }
     
-    public void shift(int top, int right,int moveTopOrDown, int moveLeftOrRigth){
-        moveAXyMoverAY(top,right);
-        this.row = row+moveTopOrDown;
-        this.column = column+moveLeftOrRigth;
-    }
+    public abstract void shift(int top, int right,int moveTopOrDown, int moveLeftOrRigth);
     
 }

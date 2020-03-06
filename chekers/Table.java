@@ -62,31 +62,20 @@ public class Table
                 JOptionPane.showMessageDialog(null,"ya hay una ficha en esa posición");
             }
         }
-        if (king){ 
-            makeKing(row,column);
-            listaDeFichas[row][column].getKing();
-        }
-    }
-    
-    private void makeKing(int row, int column){
-        Rectangle king = casillas[row][column];
-        String color = "black";
-        King peon = new King(king.getPositionX()+15,king.getPositionY()+5);
-        peon.makeVisible();
     }
     
     private void crearFicha(int row, int column, boolean white ){
         Rectangle asignarFicha = casillas[row][column];
         if (white){
             String color = "green";
-            Ficha peon = new Ficha(asignarFicha.getPositionX(),asignarFicha.getPositionY(),color);
+            Ficha peon = new peon(asignarFicha.getXPosition(),asignarFicha.getYPosition(),color);
             peon.darColor(true);
             peon.setFicha(row,column);
             listaDeFichas[row][column] = peon;
             peon.makeVisible();
         }else{
             String color = "red";
-            Ficha peon = new Ficha(asignarFicha.getPositionX(),asignarFicha.getPositionY(),color);
+            Ficha peon = new peon(asignarFicha.getXPosition(),asignarFicha.getYPosition(),color);
             peon.setFicha(row,column);
             listaDeFichas[row][column] = peon;
             peon.makeVisible();
@@ -139,7 +128,7 @@ public class Table
     
     private void moveToken(int arriba, int derecha, Rectangle move){
         Ficha moverToken = listaDeFichas[selecction[0]][selecction[1]];
-        listaDeFichas[selecction[0]][selecction[1]].shift(move.getPositionX(),move.getPositionY(),arriba,derecha);
+        listaDeFichas[selecction[0]][selecction[1]].shift(move.getXPosition(),move.getYPosition(),arriba,derecha);
         listaDeFichas[selecction[0]+arriba][selecction[1]+derecha] = listaDeFichas[selecction[0]][selecction[1]];
         listaDeFichas[selecction[0]][selecction[1]] = null;
     }

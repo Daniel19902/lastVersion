@@ -1,62 +1,62 @@
-import java.awt.*;
 
 /**
- * A triangle that can be manipulated and that draws itself on a canvas.
- * 
- * @author  Michael Kolling and David J. Barnes
- * @version 1.0  (15 July 2000)
+ * Write a description of class Figura here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
  */
-
-public class Triangle{
-    private int height;
-    private int width;
+public abstract class Figura
+{
+    
     private int xPosition;
     private int yPosition;
     private String color;
     private boolean isVisible;
-
+    
     /**
-     * Create a new triangle at default position with default color.
+     * Create a new rectangle at default position with default color.
      */
-    public Triangle(){
-        height = 20;
-        width = 20;
-        xPosition = 140;
+    public Figura(){
+        xPosition = 70;
         yPosition = 15;
-        color = "black";
+        color = "magenta";
         isVisible = false;
+    }
+    
+    public Figura(int xPosition,int yPosition,String color){
+        this();
+        this.xPosition = xPosition;
+        this.yPosition = yPosition;
+        this.color = color;
     }
     
     public void moveAXyMoverAY(int moveX,int moveY){
         moveHorizontal(moveX);
         moveVertical(moveY);
     }
-
+    
+    public int getXPosition(){
+        return this.xPosition;
+    }
+    
+    public int getYPosition(){
+        return this.yPosition;
+    }
+    
     /**
-     * Make this triangle visible. If it was already visible, do nothing.
+     * Make this circle visible. If it was already visible, do nothing.
      */
     public void makeVisible(){
         isVisible = true;
         draw();
     }
     
-    public Triangle(int x, int y){
-        this();
-        xPosition = x;
-        yPosition = y;
-        color = "black";
-    }
-    
-    public int getPositionX(){
-        return this.xPosition;
-    }
-    
-    public int getPositionY(){
-        return this.yPosition;
+    public String getColor(){
+        return this.color;
     }
     
     /**
-     * Make this triangle invisible. If it was already invisible, do nothing.
+     * Make this circle invisible. If it was already invisible, do nothing.
      */
     public void makeInvisible(){
         erase();
@@ -64,55 +64,55 @@ public class Triangle{
     }
     
     /**
-     * Move the triangle a few pixels to the right.
+     * Move the circle a few pixels to the right.
      */
     public void moveRight(){
         moveHorizontal(20);
     }
 
     /**
-     * Move the triangle a few pixels to the left.
+     * Move the circle a few pixels to the left.
      */
     public void moveLeft(){
         moveHorizontal(-20);
     }
 
     /**
-     * Move the triangle a few pixels up.
+     * Move the circle a few pixels up.
      */
     public void moveUp(){
         moveVertical(-20);
     }
 
     /**
-     * Move the triangle a few pixels down.
+     * Move the circle a few pixels down.
      */
     public void moveDown(){
         moveVertical(20);
     }
 
     /**
-     * Move the triangle horizontally.
+     * Move the circle horizontally.
      * @param distance the desired distance in pixels
      */
     public void moveHorizontal(int distance){
         erase();
-        xPosition += distance;
+        xPosition = distance;
         draw();
     }
 
     /**
-     * Move the triangle vertically.
+     * Move the circle vertically.
      * @param distance the desired distance in pixels
      */
     public void moveVertical(int distance){
         erase();
-        yPosition += distance;
+        yPosition = distance;
         draw();
     }
 
     /**
-     * Slowly move the triangle horizontally.
+     * Slowly move the circle horizontally.
      * @param distance the desired distance in pixels
      */
     public void slowMoveHorizontal(int distance){
@@ -132,7 +132,7 @@ public class Triangle{
     }
 
     /**
-     * Slowly move the triangle vertically.
+     * Slowly move the circle vertically
      * @param distance the desired distance in pixels
      */
     public void slowMoveVertical(int distance){
@@ -141,7 +141,7 @@ public class Triangle{
         if(distance < 0) {
             delta = -1;
             distance = -distance;
-        } else {
+        }else {
             delta = 1;
         }
 
@@ -152,18 +152,6 @@ public class Triangle{
     }
 
     /**
-     * Change the size to the new size
-     * @param newHeight the new height in pixels. newHeight must be >=0.
-     * @param newWidht the new width in pixels. newWidht must be >=0.
-     */
-    public void changeSize(int newHeight, int newWidth) {
-        erase();
-        height = newHeight;
-        width = newWidth;
-        draw();
-    }
-    
-    /**
      * Change the color. 
      * @param color the new color. Valid colors are "red", "yellow", "blue", "green",
      * "magenta" and "black".
@@ -172,27 +160,20 @@ public class Triangle{
         color = newColor;
         draw();
     }
-
+    
     /*
-     * Draw the triangle with current specifications on screen.
+     * Erase the circle on screen.
      */
-    private void draw(){
-        if(isVisible) {
-            Canvas canvas = Canvas.getCanvas();
-            int[] xpoints = { xPosition, xPosition + (width/2), xPosition - (width/2) };
-            int[] ypoints = { yPosition, yPosition + height, yPosition + height };
-            canvas.draw(this, color, new Polygon(xpoints, ypoints, 3));
-            canvas.wait(10);
-        }
-    }
-
-    /*
-     * Erase the triangle on screen.
-     */
-    private void erase(){
+    public void erase(){
         if(isVisible) {
             Canvas canvas = Canvas.getCanvas();
             canvas.erase(this);
         }
+    }
+    
+    public abstract void draw();
+    
+    public boolean isVisible(){
+        return isVisible;
     }
 }
