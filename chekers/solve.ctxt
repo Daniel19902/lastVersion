@@ -1,14 +1,12 @@
 #BlueJ class context
-comment0.target=solve
-comment0.text=\r\n\ Write\ a\ description\ of\ class\ solve\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment0.target=Solve
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Solve\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
 comment1.params=
-comment1.target=solve()
+comment1.target=Solve()
 comment2.params=
-comment2.target=void\ nose()
-comment3.params=turno\ veces
-comment3.target=java.lang.String[]\ move(char,\ java.lang.String[])
-comment4.params=s\ moves
-comment4.target=java.lang.String[]\ solve(char,\ java.lang.String[])
-comment5.params=s\ t
-comment5.target=void\ simulate(java.lang.String,\ int)
-numComments=6
+comment2.target=void\ llenarMatriz()
+comment3.params=player\ moves\ entra\ jumps\ shift
+comment3.target=void\ putTokens(char,\ java.lang.String,\ boolean,\ java.lang.String[],\ java.lang.String[])
+comment4.params=
+comment4.target=java.lang.String[]\ returnString()
+numComments=5

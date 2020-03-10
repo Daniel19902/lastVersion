@@ -13,22 +13,29 @@ public abstract class Ficha
     private boolean seleccion;
     private boolean isWhite;
     private Figura ficha;
+    private boolean isKing;
     
     public Ficha(){
         seleccion = false;
         isWhite = false;
+        isKing = false;
     }
     
-    public Ficha(int row, int column,Figura f){
+    public Ficha(int row, int column, Figura f, boolean king){
         this();
         this.row = row;
         this.column = column;
-        ficha = f;
+        this.isKing = king;
+        this.ficha = f;
     }
     
     public void moveAXyMoverAY(int moveX,int moveY){
         ficha.moveHorizontal(moveX);
         ficha.moveVertical(moveY);
+    }
+    
+    public boolean isKing(){
+        return this.isking;
     }
     
     public void setRow(int row){

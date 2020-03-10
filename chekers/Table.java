@@ -51,28 +51,38 @@ public class Table
     public void add(boolean white,boolean king ,int row, int column){
         if (white){
             if (listaDeFichas[row][column] == null){
-                crearFicha(row,column,white);
+                crearFicha(row,column,white,king);
             }else{
                 JOptionPane.showMessageDialog(null,"ya hay una ficha en esa posición");
             }
         }else{
             if (listaDeFichas[row][column] == null){
-                crearFicha(row,column,white);
+                crearFicha(row,column,white,king);
             }else{
                 JOptionPane.showMessageDialog(null,"ya hay una ficha en esa posición");
             }
         }
     }
     
-    private void crearFicha(int row, int column, boolean white ){
+    private void crearFicha(int row, int column, boolean white, boolean king ){
         Rectangle asignarFicha = casillas[row][column];
         if (white){
             String color = "green";
-            Ficha peon = new peon(asignarFicha.getXPosition(),asignarFicha.getYPosition(),color);
-            peon.darColor(true);
-            peon.setFicha(row,column);
-            listaDeFichas[row][column] = peon;
-            peon.makeVisible();
+            if (!king){
+                Ficha peon = new peon(asignarFicha.getXPosition(),asignarFicha.getYPosition(),color);
+                peon.darColor(true);
+                peon.setFicha(row,column);
+                listaDeFichas[row][column] = peon;
+                peon.makeVisible();
+            }else{
+                Figura triangle = new Triangle(asignarFicha.getXPosition()+15,asignarFicha.getYPosition()+3,"blue");
+                Ficha peonKing = new King(asignarFicha.getXPosition(),asignarFicha.getYPosition(),color,triangle);
+                peonKing.darColor(true);
+                peonKing.setFicha(row,column);
+                listaDeFichas[row][column] = peonKing;
+                peonKing.makeVisible();
+                triangle.makeVisible();
+            }
         }else{
             String color = "red";
             Ficha peon = new peon(asignarFicha.getXPosition(),asignarFicha.getYPosition(),color);
@@ -288,9 +298,11 @@ public class Table
     private boolean verificarMovimiento(int top, int right){
         Ficha color = listaDeFichas[selecction[0]][selecction[1]];
         boolean confirmarMovimiento = true;
-        if (color.getColorBoolenao() && top == -1)confirmarMovimiento = false;
-        else if (!color.getColorBoolenao() && top == 1)confirmarMovimiento = false;
-        else if (listaDeFichas[color.getRow()+top][color.getColumn()+right] != null)confirmarMovimiento = false;
+        if (!color.isKing()){
+            if (color.getColorBoolenao() && top == -1)confirmarMovimiento = false;
+            else if (!color.getColorBoolenao() && top == 1)confirmarMovimiento = false;
+        }
+        if (listaDeFichas[color.getRow()+top][color.getColumn()+right] != null)confirmarMovimiento = false;
         return confirmarMovimiento;
     }
 }

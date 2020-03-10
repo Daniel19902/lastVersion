@@ -6,22 +6,18 @@
  * @version (a version number or a date)
  */
 public class King extends Ficha{
-    private Triangle king;
+    private Figura king;
     
-    public King(int x, int y, String color){
-        super(x, y, new Circle(x, y, color));
-        king = new Triangle();
-    }
-    
-    public void makeVisible(){
-        king.makeVisible();
+    public King(int x, int y, String color, Figura t){
+        super(x, y, new Circle(x, y, color),true);
+        this.king = t;
     }
     
     public void shift(int top, int right,int moveTopOrDown, int moveLeftOrRigth){
         moveAXyMoverAY(top,right);
         setRow(getRow()+moveTopOrDown);
         setColumn(getColumn()+moveLeftOrRigth);
-        king.moveAXyMoverAY(top,right);
+        king.moveAXyMoverAY(top+15,right+3);
     }
    
 }

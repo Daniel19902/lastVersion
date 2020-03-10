@@ -9,7 +9,7 @@ public class peon extends Ficha
 {
 
     public peon(int x, int y, String color){
-        super(x,y,new Circle(x, y, color));
+        super(x,y,new Circle(x, y, color),false);
     }
     
     public void shift(int top, int right,int moveTopOrDown, int moveLeftOrRigth){

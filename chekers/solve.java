@@ -1,111 +1,97 @@
-import java.util.HashMap; 
-import java.util.ArrayList;
-import java.util.*; 
+import java.util.HashMap;
 /**
- * Write a description of class solve here.
+ * Write a description of class Solve here.
  * 
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class solve{
+public class Solve
+{
     private char[][] input;
     private char[][] output;
-    private HashMap<String ,Integer[]> posiciones;
+    private HashMap<String, Integer[]> negras;
     
-    public solve (){
-        posiciones = new HashMap<String ,Integer[]>();
-        input = new char[8][8];
-        output = new char[8][8];
-        
+    public Solve(){
+        input = new char[12][12];
+        output = new char[12][12];
+        negras = new HashMap<String, Integer[]>();
+        llenarMatriz();
     }
-  
-    private void nose(){
+    
+    private void llenarMatriz(){
         int contador = 1;
-        for (int i = 0 ; i < 8 ; i++){
-            for (int j = 1-i%2 ; j < 8 ; j+=2){
-                input[i][j] = '.';
-                output[i][j] = '.';
-                String pasar = String.valueOf(contador);
-                posiciones.put(pasar , new Integer[] {i,j});
-                contador+=1;
-            }for (int j =i%2 ; j < 8 ; j+=2){
-                input[i][j] = '-';
-                output[i][j] = '-';
+        for (int i = 2; i < 10; i++){
+            for (int j = 2; j < 10; j++){
+                if (i%2 == 0 && j%2!= 0){
+                    input[i][j] = '.';
+                    output[i][j] = '.';
+                    String pasar = String.valueOf(contador);
+                    negras.put(pasar, new Integer[]{i,j});
+                    contador+=1;
+                }else if (i%2 != 0 && j%2 == 0){
+                    input[i][j] = '.';
+                    output[i][j] = '.';
+                    String pasar = String.valueOf(contador);
+                    negras.put(pasar, new Integer[]{i,j});
+                    contador+=1;
+                }else{
+                    input[i][j] = '-';
+                    output[i][j] = '-';
+                }
             }
         }
     }
     
-    private String[] move(char turno, String veces[]){
-        nose();
-        for(int ii=0;ii<veces.length;ii++){
-           char ficha ='b';
-           if (turno == 'b'){
-               ficha = 'w';
-           }
-            ArrayList<Integer> move = new ArrayList<Integer>();
-            String[] jumps = veces[ii].split("x");
-            String[] shift = veces[ii].split("-");
-            char letra = veces[ii].charAt(1);
-            char letra2 = veces[ii].charAt(2);
-            if (letra == '-' || letra2 == '-'){
-                Integer[] posicion = posiciones.get(shift[0]);
-                output[posicion[0]][posicion[1]] = '.';
-                if(input[posicion[0]][posicion[1]]=='.'){
-                    input[posicion[0]][posicion[1]] = turno;
-                }
-                posicion = posiciones.get(shift[1]);
-                output[posicion[0]][posicion[1]] = turno;
-            }else{
-                Integer[] posicion = posiciones.get(jumps[0]);
-                output[posicion[0]][posicion[1]] = '.';
-                if(input[posicion[0]][posicion[1]]=='.'){
-                    input[posicion[0]][posicion[1]] = turno;
-                }
-                for(int i = 1; i< jumps.length; i++){
-                    int k1 = 1, k2 =1;
-                    Integer[] posicion2 = posiciones.get(jumps[i]);
-                    if (posicion[0] > posicion2[0]){
-                        k1 = -1;
-                    }if (posicion[1] > posicion2[1]){
-                        k2 = -1;
-                    } if (output[posicion[0]+k1][posicion[1]+k2] == '.'){
-                        input[posicion[0]+k1][posicion[1]+k2] = ficha;
-                    }else{
-                        output[posicion[0]+k1][posicion[1]+k2] = '.';
-                    }
-                    posicion = posiciones.get(jumps[i]);
-                }
-                output[posicion[0]][posicion[1]] = turno;
-            }
+    public void putTokens(char player, String moves, boolean entra, String[] jumps, String[] shift){
+        char ficha = 'b'; 
+        if (player == 'b'){
+            ficha = 'w';
         }
+        
+        if (entra){
+            Integer[] posicion = negras.get(shift[0]);
+            if (input[posicion[0]][posicion[1]] =='.'){
+                input[posicion[0]][posicion[1]] = player;
+                posicion = negras.get(shift[1]);
+                output[posicion[0]][posicion[1]] = player;  
+            }
+        }else{
+            Integer[] posicion = negras.get(jumps[0]);
+            output[posicion[0]][posicion[1]] = '.';
+            if(input[posicion[0]][posicion[1]]=='.'){
+                input[posicion[0]][posicion[1]] = player;
+            }
+            for(int i = 1; i< jumps.length; i++){
+                
+                int k1 = 1, k2 =1;
+                Integer[] posicion2 = negras.get(jumps[i]);
+                if (posicion[0] > posicion2[0]){
+                    k1 = -1;
+                }if (posicion[1] > posicion2[1]){
+                    k2 = -1;
+                }if (output[posicion[0]+k1][posicion[1]+k2] == '.'){
+                    input[posicion[0]+k1][posicion[1]+k2] = ficha;
+                }else{
+                    output[posicion[0]+k1][posicion[1]+k2] = '.';
+                }
+                posicion = negras.get(jumps[i]);
+            }
+            output[posicion[0]][posicion[1]] = player;
+        }
+    }
+    
+    public String[] returnString(){
         String[] solve=new String[8];
         for(int i = 0 ; i<8; i++){
             solve[i] ="";
             for (int j = 0; j<8; j++){
-                solve[i] += input[i][j];
+                solve[i] += input[i+2][j+2]+"  ";
             }
-            //solve[i]+="       ";
-            //for (int j = 0; j<8; j++){
-              //  solve[i] += output[i][j];
-            //}
+            solve[i]+="          ";
+            for (int j = 0; j<8; j++){
+                solve[i] += output[i+2][j+2]+"  ";
+            }
         }
         return solve;
     }
-    public String[] solve(char player,String moves[]){
-        return move(player,moves);
-    }
-    public void simulate(char s, String moves[],boolean slow){
-        Checkers c=new Checkers(8);
-        String[] r=move(s,moves);
-        c.read(r[0],r[1],r[0],r[0],r[0],r[0],r[0],r[0]);
-        if (!slow){
-            
-        }
-    }
-    
-    private String toString (){
-        
-        return "";
-    }
- }
-
+}

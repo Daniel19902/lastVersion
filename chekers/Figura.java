@@ -19,7 +19,7 @@ public abstract class Figura
     public Figura(){
         xPosition = 70;
         yPosition = 15;
-        color = "magenta";
+        color = "blue";
         isVisible = false;
     }
     
